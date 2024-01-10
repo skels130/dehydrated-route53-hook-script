@@ -37,7 +37,7 @@ deploy_challenge() {
     
     if [[ -n "$ZONE" ]]; then
         echo "Creating challenge record for ${DOMAIN} in zone ${ZONE}"
-        cli53 rrcreate --append --wait "${ZONE}" "_acme-challenge.${DOMAIN}. 60 TXT ${TOKEN_VALUE}"
+        /usr/local/bin/cli53 rrcreate --append --wait "${ZONE}" "_acme-challenge.${DOMAIN}. 60 TXT ${TOKEN_VALUE}"
     else
         echo "Could not find zone for ${DOMAIN}"
         exit 1
@@ -58,7 +58,7 @@ clean_challenge() {
     
     if [[ -n "$ZONE" ]]; then
         echo "Deleting challenge record for ${DOMAIN} from zone ${ZONE}"
-        cli53 rrdelete "${ZONE}" "_acme-challenge.${DOMAIN}." TXT
+        /usr/local/bin/cli53 rrdelete "${ZONE}" "_acme-challenge.${DOMAIN}." TXT
     else
         echo "Could not find zone for ${DOMAIN}"
         exit 1
@@ -136,7 +136,7 @@ function get_base_name() {
 function find_zone() {
   local DOMAIN="${1}"
 
-  local ZONELIST=$(cli53 list -format json | jq --raw-output '.[].Name' | sed -e 's/\.$//' | xargs echo -n)
+  local ZONELIST=$(/usr/local/bin/cli53 list -format json | jq --raw-output '.[].Name' | sed -e 's/\.$//' | xargs echo -n)
 
   local TESTDOMAIN="${DOMAIN}"
 
